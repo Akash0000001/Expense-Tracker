@@ -10,17 +10,10 @@ filter.addEventListener("keyup",filteritem)
 const itemlist=document.getElementsByTagName("li");
 for(let i=0;i<itemlist.length;i++)
 {   
-    itemlist[i].removeChild(itemlist[i].firstElementChild);
     const editbtn=document.createElement("button");
     editbtn.className="btn btn-danger btn-sm float-right edit";
     editbtn.appendChild(document.createTextNode("Edit"));
     itemlist[i].appendChild(editbtn);
-
-    const deletebtn=document.createElement("button");
-    deletebtn.className="btn btn-danger btn-sm float-right delete";
-    deletebtn.appendChild(document.createTextNode("X"));
-    itemlist[i].appendChild(deletebtn);
-
 }
 
 
@@ -37,13 +30,14 @@ function additem(e)
     const deletebtn=document.createElement("button");
     deletebtn.className="btn btn-danger btn-sm float-right delete";
     deletebtn.appendChild(document.createTextNode("X"));
+    li.append(deletebtn);
 
     const editbtn=document.createElement("button");
     editbtn.className="btn btn-danger btn-sm float-right edit";
     editbtn.appendChild(document.createTextNode("Edit"));
     li.appendChild(editbtn);
     
-    li.appendChild(deletebtn);
+    
     items.appendChild(li)
 }
 
@@ -61,3 +55,16 @@ function removeitem(e)
     }
 }
 
+//Filter item
+function filteritem(e)
+{
+    const text=e.target.value.toLowerCase();
+    const itemlist=items.getElementsByTagName("li");
+    Array.from(itemlist).forEach((item)=>{
+        const itemname=item.firstChild.textContent
+    if(itemname.toLowerCase().indexOf(text)!=-1)
+            item.style.display="block";
+        else
+            item.style.display="none";
+    });
+}
