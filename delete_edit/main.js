@@ -22,10 +22,11 @@ function additem(e)
 {
     e.preventDefault();
     const newitem=document.getElementById("item").value;
+    const newdesc=document.getElementById("desc").value;
     
     const li=document.createElement("li");
     li.className="list-group-item";
-    li.appendChild(document.createTextNode(newitem))
+    li.appendChild(document.createTextNode(`${newitem} ${newdesc}`))
 
     const deletebtn=document.createElement("button");
     deletebtn.className="btn btn-danger btn-sm float-right delete";
@@ -61,8 +62,8 @@ function filteritem(e)
     const text=e.target.value.toLowerCase();
     const itemlist=items.getElementsByTagName("li");
     Array.from(itemlist).forEach((item)=>{
-        const itemname=item.firstChild.textContent
-    if(itemname.toLowerCase().indexOf(text)!=-1)
+        const itemname=item.firstChild.textContent;
+        if(itemname.toLowerCase().indexOf(text)!=-1)
             item.style.display="block";
         else
             item.style.display="none";
