@@ -19,10 +19,20 @@ function register(event)
         },3000);
     }
     else
-        {
+        {   
+            //to show the user data on screen
+            const li=document.createElement("li")
+            li.className="list-group-item";
+            li.appendChild(document.createTextNode(`Name:${name.value},Email:${email.value},Phone:${phone.value},Date:${date.value},Time:${time.value}`))
+            li.style.color="red";
+            const users=document.getElementById("users")
+            users.appendChild(li)
+
+            //To store data in local storage as objects
             const user ={Name:name.value,Email:email.value,Phone:phone.value,Date:date.value,Time:time.value}
             const user_string=JSON.stringify(user)
-            localStorage.setItem(name.value,user_string)
+            localStorage.setItem(email.value,user_string)
+            
             name.value="";
             email.value="";
             phone.value="";
