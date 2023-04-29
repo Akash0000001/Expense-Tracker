@@ -23,9 +23,23 @@ function register(event)
             //to show the user data on screen
             const li=document.createElement("li")
             li.className="list-group-item";
-            li.appendChild(document.createTextNode(`Name:${name.value},Email:${email.value},Phone:${phone.value},Date:${date.value},Time:${time.value}`))
+            const tname=document.createTextNode(`Name:${name.value}, `)
+            li.appendChild(tname)
+            const temail=document.createTextNode(`Email:${email.value}, `)
+            li.appendChild(temail)
+            const tphone=document.createTextNode(`Phone:${phone.value}, `)
+            li.appendChild(tphone)
+            const tdate=document.createTextNode(`Date:${date.value}, `)
+            li.appendChild(tdate)
+            const ttime=document.createTextNode(`Time:${time.value} `)
+            li.appendChild(ttime)
             li.style.color="red";
+            
             const users=document.getElementById("users")
+            const input=document.createElement("input")
+            input.setAttribute("type","submit")
+            input.setAttribute("value","Delete")
+            li.append(input)
             users.appendChild(li)
 
             //To store data in local storage as objects
@@ -51,4 +65,11 @@ submit.addEventListener("mouseout",(e)=>{
 })
 submit.addEventListener("mouseover",(e)=>{
     document.querySelector("#form").style.background="#DDDDDD";
+})
+
+users.addEventListener("click",(e)=>{
+    users.removeChild(e.target.parentElement)
+    let email = e.target.parentElement.childNodes[1].textContent
+    email=email.substring(email.indexOf(":")+1,email.indexOf(","));
+    localStorage.removeItem(email);
 })
