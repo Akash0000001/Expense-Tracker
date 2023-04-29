@@ -1,14 +1,16 @@
+
+const Name=document.querySelector("#name");
+const email=document.querySelector("#email");
+const phone=document.querySelector("#phone");
+const date =document.querySelector("#date");
+const time=document.querySelector("#time");
+const msg=document.querySelector("#msg");
+const users=document.querySelector("#users");
+
 function register(event)
 {
     event.preventDefault();
-    const name=document.querySelector("#name");
-    const email=document.querySelector("#email");
-    const phone=document.querySelector("#phone");
-    const date =document.querySelector("#date");
-    const time=document.querySelector("#time");
-    const msg=document.querySelector("#msg");
-    const users=document.querySelector("#users");
-    if(name.value=="" || email.value=="" || phone.value=="" || date.value=="" || time.value=="")
+    if(Name.value=="" || email.value=="" || phone.value=="" || date.value=="" || time.value=="")
     {   
         msg.classList.add("error")
         msg.textContent="please enter all the fields!"
@@ -23,7 +25,7 @@ function register(event)
             //to show the user data on screen
             const li=document.createElement("li")
             li.className="list-group-item";
-            const tname=document.createTextNode(`Name:${name.value}, `)
+            const tname=document.createTextNode(`Name:${Name.value}, `)
             li.appendChild(tname)
             const temail=document.createTextNode(`Email:${email.value}, `)
             li.appendChild(temail)
@@ -33,21 +35,25 @@ function register(event)
             li.appendChild(tdate)
             const ttime=document.createTextNode(`Time:${time.value} `)
             li.appendChild(ttime)
-            li.style.color="red";
-            
-            const users=document.getElementById("users")
+            li.style.color="red"
+
             const input=document.createElement("input")
             input.setAttribute("type","submit")
             input.setAttribute("value","Delete")
             li.append(input)
+
+            const edit=document.createElement("button")
+            edit.appendChild(document.createTextNode("Edit"))
+            edit.setAttribute("value","Edit")
+            li.append(edit);
             users.appendChild(li)
 
             //To store data in local storage as objects
-            const user ={Name:name.value,Email:email.value,Phone:phone.value,Date:date.value,Time:time.value}
+            const user ={Name:Name.value,Email:email.value,Phone:phone.value,Date:date.value,Time:time.value}
             const user_string=JSON.stringify(user)
             localStorage.setItem(email.value,user_string)
             
-            name.value="";
+            Name.value="";
             email.value="";
             phone.value="";
             date.value="";
@@ -68,8 +74,37 @@ submit.addEventListener("mouseover",(e)=>{
 })
 
 users.addEventListener("click",(e)=>{
-    users.removeChild(e.target.parentElement)
-    let email = e.target.parentElement.childNodes[1].textContent
-    email=email.substring(email.indexOf(":")+1,email.indexOf(","));
-    localStorage.removeItem(email);
+
+    if(e.target.value=="Delete")
+    {
+        users.removeChild(e.target.parentElement)
+        let email = e.target.parentElement.childNodes[1].textContent
+        email=email.substring(email.indexOf(":")+1,email.indexOf(","));
+        localStorage.removeItem(email);
+    }
+    else
+    {
+        users.removeChild(e.target.parentElement)
+        let em = e.target.parentElement.childNodes[1].textContent
+        em=em.substring(em.indexOf(":")+1,em.indexOf(","));
+        localStorage.removeItem(em);
+        email.value=em
+
+        let nm = e.target.parentElement.childNodes[0].textContent
+        nm=nm.substring(nm.indexOf(":")+1,nm.indexOf(","));
+        Name.value=nm;
+
+        let ph = e.target.parentElement.childNodes[2].textContent
+        ph=ph.substring(ph.indexOf(":")+1,ph.indexOf(","));
+        phone.value=ph;
+
+        let Dt = e.target.parentElement.childNodes[3].textContent
+        Dt=Dt.substring(Dt.indexOf(":")+1,Dt.indexOf(","));
+        date.value=Dt
+
+        let tm = e.target.parentElement.childNodes[4].textContent
+        tm=tm.substring(tm.indexOf(":")+1,tm.indexOf(" "));
+        time.value=tm
+
+    }
 })
