@@ -20,7 +20,9 @@ function register(event)
     }
     else
         {
-            localStorage.setItem(name.value,`Name:${name.value} Email:${email.value} Phone:${phone.value} Date:${date.value} Time:${time.value} `) 
+            const user ={Name:name.value,Email:email.value,Phone:phone.value,Date:date.value,Time:time.value}
+            const user_string=JSON.stringify(user)
+            localStorage.setItem(name.value,user_string)
             name.value="";
             email.value="";
             phone.value="";
