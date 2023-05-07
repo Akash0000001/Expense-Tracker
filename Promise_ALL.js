@@ -15,7 +15,8 @@ function updateLastUserActivityTime()
         },2000)
     })
 }
-function deletepost(){
+
+function deletePost(){
     return new Promise((res,rej)=>{
         setTimeout(()=>{
             if(posts.length>0)
@@ -28,13 +29,17 @@ function deletepost(){
     },5000)
 })
 }
+async function post()
+{
+    const [createpost,crelat]=await Promise.all([createPost({title:"Post 4"}),updateLastUserActivityTime()])
+    posts.forEach((post)=>console.log(post.title))
+    console.log(`last user activity:${crelat}`)   
 
-Promise.all([createPost({title:"Post 4"}),updateLastUserActivityTime()]).then(([res1,res2])=>{
+    const [deletepost,lat]=await Promise.all([deletePost(),updateLastUserActivityTime()])
     posts.forEach((post)=>console.log(post.title))
-    console.log(`last activity time:${res2}`)
-})
-Promise.all([deletepost(),updateLastUserActivityTime()]).then(([res1,res2])=>{
-    posts.forEach((post)=>console.log(post.title))
-    console.log(`last activity time:${res2}`)
-})
+    console.log(`last user activity:${lat}`)
+}
+post()
+
+
 
