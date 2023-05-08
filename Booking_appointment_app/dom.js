@@ -22,36 +22,45 @@ function register(event)
     }
     else
         {   
-            //to show the user data on screen
-            const li=document.createElement("li")
-            li.className="list-group-item";
-            const tname=document.createTextNode(`Name:${Name.value}, `)
-            li.appendChild(tname)
-            const temail=document.createTextNode(`Email:${email.value}, `)
-            li.appendChild(temail)
-            const tphone=document.createTextNode(`Phone:${phone.value}, `)
-            li.appendChild(tphone)
-            const tdate=document.createTextNode(`Date:${date.value}, `)
-            li.appendChild(tdate)
-            const ttime=document.createTextNode(`Time:${time.value} `)
-            li.appendChild(ttime)
-            li.style.color="red"
+            function showuseronscreen(data){
+                const li=document.createElement("li")
+                li.className="list-group-item";
+                li.id=data.id
+                const tname=document.createTextNode(`Name:${data.Name}, `)
+                li.appendChild(tname)
+                const temail=document.createTextNode(`Email:${data.Email}, `)
+                li.appendChild(temail)
+                const tphone=document.createTextNode(`Phone:${data.Phone}, `)
+                li.appendChild(tphone)
+                const tdate=document.createTextNode(`Date:${data.Date}, `)
+                li.appendChild(tdate)
+                const ttime=document.createTextNode(`Time:${data.Time} `)
+                li.appendChild(ttime)
+                li.style.color="red"
 
-            const input=document.createElement("input")
-            input.setAttribute("type","submit")
-            input.setAttribute("value","Delete")
-            li.append(input)
+                const input=document.createElement("input")
+                input.setAttribute("type","submit")
+                input.setAttribute("value","Delete")
+                li.append(input)
 
-            const edit=document.createElement("button")
-            edit.appendChild(document.createTextNode("Edit"))
-            edit.setAttribute("value","Edit")
-            li.append(edit);
-            users.appendChild(li)
+                const edit=document.createElement("button")
+                edit.appendChild(document.createTextNode("Edit"))
+                edit.setAttribute("value","Edit")
+                li.append(edit);
+                users.appendChild(li)
+            }
 
             //To store data in local storage as objects
-            const user ={Name:Name.value,Email:email.value,Phone:phone.value,Date:date.value,Time:time.value}
-            const user_string=JSON.stringify(user)
-            localStorage.setItem(email.value,user_string)
+             const user ={Name:Name.value,Email:email.value,Phone:phone.value,Date:date.value,Time:time.value}
+            //const user_string=JSON.stringify(user)
+            // localStorage.setItem(email.value,user_string)
+            axios.post("https://crudcrud.com/api/b182041f3c9b4fdba556bf039adfb07/appointment_data",user)
+            .then(res=>showuseronscreen(res.data))
+            .catch(err=>{
+                document.body.innerHTML=document.body.innerHTML+"<h4 style='color:red;'>Something went wrong! </h4>"
+                setTimeout(()=>document.body.lastElementChild.remove(),5000)
+                console.log(err)
+            })
             
             Name.value="";
             email.value="";
@@ -73,38 +82,38 @@ submit.addEventListener("mouseover",(e)=>{
     document.querySelector("#form").style.background="#DDDDDD";
 })
 
-users.addEventListener("click",(e)=>{
+// users.addEventListener("click",(e)=>{
 
-    if(e.target.value=="Delete")
-    {
-        users.removeChild(e.target.parentElement)
-        let email = e.target.parentElement.childNodes[1].textContent
-        email=email.substring(email.indexOf(":")+1,email.indexOf(","));
-        localStorage.removeItem(email);
-    }
-    else
-    {
-        users.removeChild(e.target.parentElement)
-        let em = e.target.parentElement.childNodes[1].textContent
-        em=em.substring(em.indexOf(":")+1,em.indexOf(","));
-        localStorage.removeItem(em);
-        email.value=em
+//     if(e.target.value=="Delete")
+//     {
+//         users.removeChild(e.target.parentElement)
+//         axios.delete("https://crudcrud.com/api/b182041f3c9b4fdba556bf039adfb07/appointment_data/e.target.parentelement.id")
+//         .then(res=>console.log(res))
+//         //localStorage.removeItem(email);
+//     }
+//     else
+//     {
+//         users.removeChild(e.target.parentElement)
+//         let em = e.target.parentElement.childNodes[1].textContent
+//         em=em.substring(em.indexOf(":")+1,em.indexOf(","));
+//         localStorage.removeItem(em);
+//         email.value=em
 
-        let nm = e.target.parentElement.childNodes[0].textContent
-        nm=nm.substring(nm.indexOf(":")+1,nm.indexOf(","));
-        Name.value=nm;
+//         let nm = e.target.parentElement.childNodes[0].textContent
+//         nm=nm.substring(nm.indexOf(":")+1,nm.indexOf(","));
+//         Name.value=nm;
 
-        let ph = e.target.parentElement.childNodes[2].textContent
-        ph=ph.substring(ph.indexOf(":")+1,ph.indexOf(","));
-        phone.value=ph;
+//         let ph = e.target.parentElement.childNodes[2].textContent
+//         ph=ph.substring(ph.indexOf(":")+1,ph.indexOf(","));
+//         phone.value=ph;
 
-        let Dt = e.target.parentElement.childNodes[3].textContent
-        Dt=Dt.substring(Dt.indexOf(":")+1,Dt.indexOf(","));
-        date.value=Dt
+//         let Dt = e.target.parentElement.childNodes[3].textContent
+//         Dt=Dt.substring(Dt.indexOf(":")+1,Dt.indexOf(","));
+//         date.value=Dt
 
-        let tm = e.target.parentElement.childNodes[4].textContent
-        tm=tm.substring(tm.indexOf(":")+1,tm.indexOf(" "));
-        time.value=tm
+//         let tm = e.target.parentElement.childNodes[4].textContent
+//         tm=tm.substring(tm.indexOf(":")+1,tm.indexOf(" "));
+//         time.value=tm
 
-    }
-})
+//     }
+// })
