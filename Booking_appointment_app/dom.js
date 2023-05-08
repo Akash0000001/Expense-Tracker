@@ -23,15 +23,18 @@ function showuseronscreen(data){
     li.appendChild(ttime)
     li.style.color="red"
 
+    const edit=document.createElement("button")
+    edit.style.marginLeft="5px";
+    edit.appendChild(document.createTextNode("Edit"))
+    edit.setAttribute("value","Edit")
+    li.append(edit);
+    
     const input=document.createElement("input")
     input.setAttribute("type","submit")
     input.setAttribute("value","Delete")
     li.append(input)
 
-    const edit=document.createElement("button")
-    edit.appendChild(document.createTextNode("Edit"))
-    edit.setAttribute("value","Edit")
-    li.append(edit);
+    
     users.appendChild(li)
 }
 
