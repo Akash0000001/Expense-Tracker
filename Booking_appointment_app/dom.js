@@ -45,7 +45,6 @@ function register(event)
     {   
         msg.classList.add("error")
         msg.textContent="please enter all the fields!"
-        console.log(msg.childNodes)
         setTimeout(() => {
             msg.firstChild.remove()
             msg.classList.remove("error")
@@ -119,15 +118,11 @@ users.addEventListener("click",(e)=>{
     else
     {   
         //To delete data from cloud and then edit it.
-        
+
         users.removeChild(e.target.parentElement)
-        axios.delete(`https://crudcrud.com/api/b182041f3c9b4fdba556bf039adfb507/appointment_data/${e.target.parentElement.id}`)
-        .then(res=>console.log(res))
-        .catch(err=>console.log(err))
         let em = e.target.parentElement.childNodes[1].textContent
         em=em.substring(em.indexOf(":")+1,em.indexOf(","));
 
-        //localStorage.removeItem(em);
         email.value=em
 
         let nm = e.target.parentElement.childNodes[0].textContent
@@ -145,6 +140,28 @@ users.addEventListener("click",(e)=>{
         let tm = e.target.parentElement.childNodes[4].textContent
         tm=tm.substring(tm.indexOf(":")+1,tm.indexOf(" "));
         time.value=tm
+        form.addEventListener("submit",(e)=>{
+            e.preventDefault();
+            if(Name.value=="" || email.value=="" || phone.value=="" || date.value=="" || time.value=="")
+        {   
+            msg.classList.add("error")
+            msg.textContent="please enter all the fields!"
+            console.log(msg.childNodes)
+            setTimeout(() => {
+                msg.firstChild.remove()
+                msg.classList.remove("error")
+            },3000);
+        }
+        else
+        {
+            const user ={Name:Name.value,Email:email.value,Phone:phone.value,Date:date.value,Time:time.value}
+            axios.put(`https://crudcrud.com/api/b182041f3c9b4fdba556bf039adfb507/appointment_data/${e.target.parentElement.id}`,user)
+            .then(res=>showuseronscreen(res.data))
+            .catch(err=>console.log(err))
+        }
+        })
+        
+        
 
     }
 })
