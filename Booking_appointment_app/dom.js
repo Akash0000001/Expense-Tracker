@@ -101,7 +101,10 @@ submit.addEventListener("mouseover",(e)=>{
 })
 
 users.addEventListener("click",(e)=>{
+    
+    //To delete the data from cloud and screen.
 
+    
     if(e.target.value=="Delete")
     {
         users.removeChild(e.target.parentElement)
@@ -111,8 +114,12 @@ users.addEventListener("click",(e)=>{
         .catch(err=>console.log(err))
         //localStorage.removeItem(email);
     }
+
+    
     else
-    {
+    {   
+        //To delete data from cloud and then edit it.
+        
         users.removeChild(e.target.parentElement)
         axios.delete(`https://crudcrud.com/api/b182041f3c9b4fdba556bf039adfb507/appointment_data/${e.target.parentElement.id}`)
         .then(res=>console.log(res))
