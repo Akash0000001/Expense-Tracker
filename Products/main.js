@@ -18,7 +18,7 @@ function showproducts(data)
     li.className="list-group-item";
     li.appendChild(document.createTextNode(`${data.price}-${data.category}-${data.product_name}`))
     const btn=document.createElement("button");
-    btn.className="btn btn-dark";
+    btn.className="btn btn-sm btn-dark";
     btn.appendChild(document.createTextNode("Delete Order"))
     li.appendChild(btn)
     if(data.category=="Electronics")
@@ -35,21 +35,21 @@ function showproducts(data)
     }
 }
 
-function onsubmit(e)
+function onsubmit(event)
 {
-    e.preventDefault();
+    event.preventDefault();
     if (category.value=="" || sp.value=="" || pn.value=="")
     {
         msg.appendChild(document.createTextNode("Please enter all fields!"))
-
+        setTimeout(()=>msg.firstChild.remove(),5000)
     }
     else
     {
-        axios.post("https://crudcrud.com/api/ea913046145d416fa74cf1a22571b220/Products",{price:sp.value,product_name:pn.value,category:category.value})
+        axios.post("https://crudcrud.com/api/ddcea8e95483456498f3fb5cd5c18b05/Todoslist",{price:sp.value,product_name:pn.value,category:category.value})
         .then(res=>showproducts(res.data))
         .catch(err=>{
-            document.body.innerHTML=document.body.innerHTML+'<h3 style="color:red;">Something went wrong!</h3>'
-            setTimeout(()=>document.body.lastElementChild.remove(),5000)
+            msg.appendChild(document.createTextNode("Something went wrong!"))
+            setTimeout(()=>msg.firstChild.remove(),5000)
             console.log(err)
         })
         category.value="" 
@@ -57,29 +57,31 @@ function onsubmit(e)
         pn.value=""
 }}
 window.addEventListener("DOMContentLoaded",()=>{
-    axios.get("https://crudcrud.com/api/ea913046145d416fa74cf1a22571b220/Products")
+    axios.get("https://crudcrud.com/api/ddcea8e95483456498f3fb5cd5c18b05/Todoslist")
     .then(res=>{
         res.data.forEach((d)=>showproducts(d))
     })
     .catch(err=>{
-        document.body.innerHTML=document.body.innerHTML+'<h3 style="color:red;">Something went wrong!</h3>'
-        setTimeout(()=>document.body.lastElementChild.remove(),5000)
+        msg.appendChild(document.createTextNode("Something went wrong!"))
+        setTimeout(()=>msg.firstChild.remove(),5000)
         console.log(err)
     })
 })
 allList.addEventListener("click",delet)
 function delet(e)
-{
-    const order=e.target.parentElement.parentElement
-    axios.delete(`https://crudcrud.com/api/ea913046145d416fa74cf1a22571b220/Products/${e.target.parentElement.id}`)
-    .then(res=>{
+{   if(e.target.classList.contains("btn-dark"))
+    {   const order=e.target.parentElement.parentElement
+        axios.delete(`https://crudcrud.com/api/ddcea8e95483456498f3fb5cd5c18b05/Todoslist/${e.target.parentElement.id}`)
+        .then(res=>{
         console.log(res)
         order.removeChild(e.target.parentElement)
-})
-    .catch(err=>{
-        document.body.innerHTML=document.body.innerHTML+'<h3 style="color:red;">Something went wrong!</h3>'
-        setTimeout(()=>document.body.lastElementChild.remove(),5000)
+    })
+        .catch(err=>{
+        msg.appendChild(document.createTextNode("Something went wrong!"))
+        setTimeout(()=>msg.firstChild.remove(),5000)
         console.log(err)
     })
+    }
 }
+
     
