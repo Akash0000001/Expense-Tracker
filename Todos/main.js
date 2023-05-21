@@ -18,13 +18,11 @@ function taskonscreen(data)
     if(data.isDone==false)
     {
         const tick=document.createElement("button")
-        tick.id="btndn"
-        tick.className="btn btn-danger btn-sm float-end"
-        tick.appendChild(document.createTextNode("Done"))
+        tick.className="btn btn-danger btn-sm float-end Done"
+        tick.appendChild(document.createTextNode("✓"))
 
         const del=document.createElement("button")
-        del.id="btndel"
-        del.className="btn btn-danger btn-sm float-end"
+        del.className="btn btn-danger btn-sm float-end Delete"
         del.appendChild(document.createTextNode("X"))
         li.appendChild(del)
         li.appendChild(tick)
@@ -45,27 +43,26 @@ function onsubmit(e)
         setTimeout(()=>msg.firstChild.remove(),5000)
     }
     else{
-        axios.post("https://crudcrud.com/api/ddcea8e95483456498f3fb5cd5c18b05/Todoslist",{TodoName:name.value,Description:desc.value,isDone:false})
+        axios.post("https://crudcrud.com/api/6ca6014f72084ca6976de347d41b5d48/Todoslist",{TodoName:name.value,Description:desc.value,isDone:false})
         .then(res=>{
-            taskonscreen(res.data)
+            taskonscreen(res.data);
+            name.value="";
+            desc.value="";
         })
         .catch(err=>{
             msg.appendChild(document.createTextNode("Something went wrong!"))
             setTimeout(()=>msg.firstChild.remove(),5000)
             console.log(err)
         })
-
-        name.value=""
-        desc.value=""
     }
 }
+
 function todo(e)
 {
-    if(e.target.id=="btndn")
+    if(e.target.classList.contains("Done"))
     {
-        axios.put(`https://crudcrud.com/api/ddcea8e95483456498f3fb5cd5c18b05/Todoslist/${e.target.parentElement.id}`,{TodoName:e.target.parentElement.childNodes[0].textContent,Description:e.target.parentElement.childNodes[2].textContent,isDone:true})
+        axios.put(`https://crudcrud.com/api/6ca6014f72084ca6976de347d41b5d48/Todoslist/${e.target.parentElement.id}`,{TodoName:e.target.parentElement.childNodes[0].textContent,Description:e.target.parentElement.childNodes[2].textContent,isDone:true})
         .then(res=>{
-            console.log(res)
             const li=document.createElement("li")
             li.id=e.target.parentElement.id
             li.className="list-group-item"
@@ -74,7 +71,6 @@ function todo(e)
             li.appendChild(document.createTextNode(e.target.parentElement.childNodes[2].textContent))
             td.appendChild(li)
             tr.removeChild(e.target.parentElement)
-            console.log(e.target)
         })
         .catch(err=>{
             msg.appendChild(document.createTextNode("Something went wrong!"))
@@ -83,13 +79,11 @@ function todo(e)
         })
     }
 
-    else if(e.target.id=="btndel")
+    else if(e.target.classList.contains("Delete"))
     {   
-        axios.delete(`https://crudcrud.com/api/ddcea8e95483456498f3fb5cd5c18b05/Todoslist/${e.target.parentElement.id}`)
+        axios.delete(`https://crudcrud.com/api/6ca6014f72084ca6976de347d41b5d48/Todoslist/${e.target.parentElement.id}`)
         .then(res=>{
-            console.log(res)
-            tr.removeChild(e.target.parentElement)
-            console.log(e.target.parentElement)
+            tr.removeChild(e.target.parentElement);
         })
         .catch(err=>{
             msg.appendChild(document.createTextNode("Something went wrong!"))
@@ -100,7 +94,7 @@ function todo(e)
     } 
 }
 window.addEventListener("DOMContentLoaded",()=>{
-    axios.get("https://crudcrud.com/api/ddcea8e95483456498f3fb5cd5c18b05/Todoslist")
+    axios.get("https://crudcrud.com/api/6ca6014f72084ca6976de347d41b5d48/Todoslist")
     .then(res=>{
         res.data.forEach(d=>taskonscreen(d));
     })
