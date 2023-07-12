@@ -7,19 +7,21 @@ form.addEventListener("submit",onsubmit)
 async function onsubmit(e)
 {
     e.preventDefault();
-    const user={Name:Email.value,Password:Password.value}
+    const user={Email:Email.value,Password:Password.value}
     try{
     const res=await axios.post("http://localhost:4000/user/login",user)
     alert("user logged in successfully")
     }
     catch(err){
-        console.log(err)
-        if(err.status===400)
+        if(err.response)
         {
-        msg.innerText="User donot exist"
+            msg.innerText=err.response.data
+            
+        }
+        else{
+            msg.innerText="Something Went wrong"
+        }
+        setTimeout(()=>msg.firstChild.remove(),5000)
+        console.log(err)
     }
-    else{
-        msg.innerText="Something went wrong"
-    }
-}
 }
