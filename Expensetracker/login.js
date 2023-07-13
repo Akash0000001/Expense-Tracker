@@ -10,12 +10,12 @@ async function onsubmit(e)
     const user={Email:Email.value,Password:Password.value}
     try{
     const res=await axios.post("http://localhost:4000/user/login",user)
-    alert("user logged in successfully")
+    alert(res)
     }
     catch(err){
         if(err.response)
         {
-            msg.innerText=err.response.data
+            msg.innerText=err.response.data.message
             
         }
         else{

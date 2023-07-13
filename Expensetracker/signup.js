@@ -21,6 +21,7 @@ function onsubmit(e)
         {
             message.innerText="Error:Something went wrong"
         }
+        setTimeout(()=>message.firstChild.remove(),5000)
         console.log(err)
     })
 }
