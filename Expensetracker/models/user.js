@@ -2,18 +2,24 @@ const Sequelize=require("sequelize");
 const sequelize=require("../util/database")
 
 const Users=sequelize.define("users",{
+    id:{
+        type:Sequelize.INTEGER,
+        autoIncrement:true,
+        primaryKey:true,
+        allowNull:false,
+    },
     Name:{
         type:Sequelize.STRING,
         allowNull:false
     },
     Email:{
         type:Sequelize.STRING,
-        primaryKey:true,
-        allowedNull:false
+        allowNull:false,
+        unique:true
     },
     Password:{
         type:Sequelize.STRING,
-        allowedNull:false
+        allowNull:false
     },
 })
 module.exports=Users;

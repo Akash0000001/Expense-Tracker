@@ -1,8 +1,8 @@
 const Users=require("../models/user")
 const bcrypt=require("bcrypt")
+const jwt=require("jsonwebtoken")
 exports.adduser=(req,res,next)=>{
     const {Name,Email,Password}=req.body
-    console.log(Password)
     const saltrounds=10;
     bcrypt.hash(Password,saltrounds,async (err,hash)=>
     {
@@ -19,6 +19,10 @@ catch(err)
 }
 })
 }
+function generateaccesstoken(id,name)
+{
+    return jwt.sign({userId:id,name:name},'23467tyvvchgdhhafugfyfgaygayg344545654645324')
+}
 exports.authorizeuser=async (req,res,next)=>{
     try{
     const users=await Users.findAll()
@@ -33,7 +37,7 @@ exports.authorizeuser=async (req,res,next)=>{
                     }
                     if(result===true)
                     {
-                        res.status(200).json({success:true,message:"User logged in successfully"})
+                        res.status(200).json({success:true,message:"User logged in successfully",token:generateaccesstoken(users[i].id,users[i].Name)})
                     }
                     else
                     {

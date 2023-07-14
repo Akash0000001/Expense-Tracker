@@ -54,11 +54,12 @@ async function onsubmit(e)
         
 
         //To store data in local storage as objects
-        const user ={Expense:expense.value,Description:desc.value,Category:cat.value}
+        const exp={Expense:expense.value,Description:desc.value,Category:cat.value}
         //const user_string=JSON.stringify(user)
         //localStorage.setItem(desc.value,user_string)
         try{
-        const res=await axios.post("http://localhost:4000/expense/add",user)
+        const token=localStorage.getItem("token")
+        const res=await axios.post("http://localhost:4000/expense/add",exp,{headers:{"Authorization":token}})
             showexpenseonscreen(res.data)
             expense.value=""
             desc.value=""
@@ -75,7 +76,8 @@ async function onsubmit(e)
 
 window.addEventListener("DOMContentLoaded",async ()=>{
     try{
-    const res=await axios.get("http://localhost:4000/expense/list")
+    const token=localStorage.getItem("token")    
+    const res=await axios.get("http://localhost:4000/expense/list",{headers:{"Authorization":token}})
         res.data.forEach(element => {
             showexpenseonscreen(element)
         });
@@ -94,8 +96,9 @@ window.addEventListener("DOMContentLoaded",async ()=>{
             
             //let desc = e.target.parentElement.childNodes[2].textContent
             //localStorage.removeItem(desc);
+            const token =localStorage.getItem("token")
             try{
-            const res=await axios.delete(`http://localhost:4000/expense/delete/${e.target.parentElement.id}`)
+            const res=await axios.delete(`http://localhost:4000/expense/delete/${e.target.parentElement.id}`,{headers:{"Authorization":token}})
                 expenses[0].removeChild(e.target.parentElement)
                 console.log(res)}
             catch(err){
@@ -106,7 +109,8 @@ window.addEventListener("DOMContentLoaded",async ()=>{
         }
         else if(e.target.value==="Edit")
         {   try{
-            const res=await axios.delete(`http://localhost:4000/expense/delete/${e.target.parentElement.id}`)
+            const token =localStorage.getItem("token")
+            const res=await axios.delete(`http://localhost:4000/expense/delete/${e.target.parentElement.id}`,{headers:{"Authorization":token}})
                 expenses[0].removeChild(e.target.parentElement)
                 console.log(res)}
             catch(err){
