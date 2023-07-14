@@ -10,7 +10,8 @@ async function onsubmit(e)
     const user={Email:Email.value,Password:Password.value}
     try{
     const res=await axios.post("http://localhost:4000/user/login",user)
-    alert(res)
+    alert(res.data.message)
+    window.location.assign("index.html")
     }
     catch(err){
         if(err.response)
