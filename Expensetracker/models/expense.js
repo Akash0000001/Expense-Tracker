@@ -10,15 +10,15 @@ const Expenses=sequelize.define("expense",{
     },
     expense:{
         type:Sequelize.DOUBLE,
-        allowedNull:false
+        allowNull:false
     },
     description:{
         type:Sequelize.STRING,
-        allowedNull:false
+        allowNull:false
     },
     category:{
         type:Sequelize.STRING,
-        allowedNull:false
+        allowNull:false
     }
 })
 module.exports=Expenses;

@@ -35,7 +35,7 @@ function showexpenseonscreen(data)
         li.appendChild(edit);
         expenses[0].appendChild(li);
 }
-function onsubmit(e)
+async function onsubmit(e)
 {
     e.preventDefault()
     if(expense.value=="" || desc.value=="" || cat.value=="" )
@@ -57,65 +57,63 @@ function onsubmit(e)
         const user ={Expense:expense.value,Description:desc.value,Category:cat.value}
         //const user_string=JSON.stringify(user)
         //localStorage.setItem(desc.value,user_string)
-        
-        axios.post("http://localhost:4000/expense/add",user)
-        .then(res=>{
+        try{
+        const res=await axios.post("http://localhost:4000/expense/add",user)
             showexpenseonscreen(res.data)
             expense.value=""
             desc.value=""
             cat.value=""
-        })
-        .catch(err=>{
+        }
+        catch(err){
         error.innerHTML="<h4 style='color:red;'>Something went wrong! </h4>"
         setTimeout(()=>error.lastChild.remove(),5000)
         console.log(err)
-        })
+        }
         
     }
 }
 
-window.addEventListener("DOMContentLoaded",()=>{
-    axios.get("http://localhost:4000/expense/list")
-    .then(res=>{
+window.addEventListener("DOMContentLoaded",async ()=>{
+    try{
+    const res=await axios.get("http://localhost:4000/expense/list")
         res.data.forEach(element => {
             showexpenseonscreen(element)
         });
-    })
-    .catch(err=>{
+    }
+    catch(err){
         error.innerHTML="<h4 style='color:red;'>Something went wrong! </h4>"
         setTimeout(()=>error.lastChild.remove(),5000)
         console.log(err)
-    })
+    }
 })
 
-    expenses[0].addEventListener("click",(e)=>{
+    expenses[0].addEventListener("click",async (e)=>{
 
         if(e.target.value==="Delete")
         {
             
             //let desc = e.target.parentElement.childNodes[2].textContent
             //localStorage.removeItem(desc);
-            axios.delete(`http://localhost:4000/expense/delete/${e.target.parentElement.id}`)
-            .then(res=>{
+            try{
+            const res=await axios.delete(`http://localhost:4000/expense/delete/${e.target.parentElement.id}`)
                 expenses[0].removeChild(e.target.parentElement)
-                console.log(res)})
-            .catch(err=>{
+                console.log(res)}
+            catch(err){
             error.innerHTML="<h4 style='color:red;'>Something went wrong! </h4>"
             setTimeout(()=>error.lastChild.remove(),5000)
             console.log(err)
-            })
+            }
         }
         else if(e.target.value==="Edit")
-        {
-            axios.delete(`http://localhost:4000/expense/delete/${e.target.parentElement.id}`)
-            .then(res=>{
+        {   try{
+            const res=await axios.delete(`http://localhost:4000/expense/delete/${e.target.parentElement.id}`)
                 expenses[0].removeChild(e.target.parentElement)
-                console.log(res)})
-            .catch(err=>{
+                console.log(res)}
+            catch(err){
             error.innerHTML="<h4 style='color:red;'>Something went wrong! </h4>"
             setTimeout(()=>error.lastChild.remove(),5000)
             console.log(err)
-            })
+            }
             let de = e.target.parentElement.childNodes[2].textContent
             //localStorage.removeItem(de);
             desc.value=de

@@ -6,13 +6,19 @@ const message=document.getElementById("msg")
 
 form.addEventListener("submit",onsubmit)
 
-function onsubmit(e)
+async function onsubmit(e)
 {
     e.preventDefault();
     const user ={Name:Name.value,Email:Email.value,Password:Password.value}
-    axios.post("http://localhost:4000/user/signup",user)
-    .then(res=>console.log(res))
-    .catch(err=>{
+    try{
+    const res=await axios.post("http://localhost:4000/user/signup",user)
+        message.innerText=res.data;
+        setTimeout(()=>message.firstChild.remove(),5000)
+        Name.value="";
+        Email.value="";
+        Password.value="";
+    }
+    catch(err){
         if(err.response && err.response.data.name==="SequelizeUniqueConstraintError")
         {
         message.innerText="Error:User already exists"
@@ -23,5 +29,5 @@ function onsubmit(e)
         }
         setTimeout(()=>message.firstChild.remove(),5000)
         console.log(err)
-    })
+    }
 }
