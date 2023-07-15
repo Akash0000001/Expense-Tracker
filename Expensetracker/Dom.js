@@ -4,6 +4,85 @@ const desc=document.getElementById("description")
 const cat=document.getElementById("category")
 const expenses=document.getElementsByClassName("list-group")
 const error=document.querySelector(".error")
+const premiumcol=document.getElementById("premiumcol")
+
+window.addEventListener("DOMContentLoaded",async ()=>{
+    try{
+    const token=localStorage.getItem("token")    
+    const res=await axios.get("http://localhost:4000/expense/list",{headers:{"Authorization":token}})
+        console.log(res.data)
+        if(res.data.ispremiumuser===null)
+        {
+            const premiumbutton=document.createElement("button")
+            premiumbutton.id="rzp-button1"
+            premiumbutton.classList="btn btn-dark mt-3"
+            premiumbutton.appendChild(document.createTextNode("Buy Premium"))
+
+            premiumcol.appendChild(premiumbutton)
+        }
+        res.data.result.forEach(element => {
+            showexpenseonscreen(element)
+        });
+    }
+    catch(err){
+        error.innerHTML="<h4 style='color:red;'>Something went wrong! </h4>"
+        setTimeout(()=>error.lastChild.remove(),5000)
+        console.log(err)
+    }
+})
+
+document.getElementById('premiumcol').onclick = async function(e){
+if(e.target.id==="rzp-button1"){
+try{
+const token =localStorage.getItem("token")
+const response = await axios.get("http://localhost:4000/purchase/primemembership",{headers:{"Authorization":token}})
+
+var options = {
+    "key": response.data.key_id, // Enter the Key ID generated from the Dashboard
+    "order_id":response.data.order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+    "theme": {
+        "color": "#3399cc"
+    },
+    "handler": async function (response){
+        
+        try{
+        await axios.post("http://localhost:4000/purchase/updatetransactionstatus",{order_id:options.order_id,payment_id:response.razorpay_payment_id,status:"SUCCESSFUL"},
+        {headers:{"Authorization":token}})
+        // console.log(response.razorpay_payment_id);
+        // console.log(response.razorpay_order_id);
+        // console.log(response.razorpay_signature)
+        alert("Transaction Successful")
+        alert("you are a premium member now!")
+        }
+        catch(err){
+            console.log(err)
+        }
+    },
+};
+var rzp1 = new Razorpay(options);
+
+    rzp1.open();
+    e.preventDefault();
+
+    rzp1.on("payment.failed",async function(response){
+        try{
+        await axios.post("http://localhost:4000/purchase/updatetransactionstatus",{order_id:options.order_id,status:"FAILED"},
+        {headers:{"Authorization":token}})
+        alert("Transaction Failed")
+        }
+        catch(err){
+            console.log(err)
+        }
+    })
+}
+catch(err){
+    console.log(err)
+    error.innerHTML="<h4 style='color:red;'>Something went wrong! </h4>"
+    setTimeout(()=>error.lastChild.remove(),5000)
+}
+}
+}
+
 
 form.addEventListener("submit",onsubmit);
 function showexpenseonscreen(data)
@@ -74,20 +153,7 @@ async function onsubmit(e)
     }
 }
 
-window.addEventListener("DOMContentLoaded",async ()=>{
-    try{
-    const token=localStorage.getItem("token")    
-    const res=await axios.get("http://localhost:4000/expense/list",{headers:{"Authorization":token}})
-        res.data.forEach(element => {
-            showexpenseonscreen(element)
-        });
-    }
-    catch(err){
-        error.innerHTML="<h4 style='color:red;'>Something went wrong! </h4>"
-        setTimeout(()=>error.lastChild.remove(),5000)
-        console.log(err)
-    }
-})
+
 
     expenses[0].addEventListener("click",async (e)=>{
 
