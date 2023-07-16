@@ -12,6 +12,7 @@ async function onsubmit(e)
     const res=await axios.post("http://localhost:4000/user/login",user)
     alert(res.data.message)
     localStorage.setItem("token",res.data.token)
+    //localStorage.setItem("ispremium",res.data.ispremium)
     window.location.assign("index.html")
     }
     catch(err){

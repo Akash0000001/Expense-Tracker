@@ -6,21 +6,25 @@ const expenses=document.getElementsByClassName("list-group")
 const error=document.querySelector(".error")
 const premiumcol=document.getElementById("premiumcol")
 
+function showleaderboardonscreen(data)
+{
+    const li=document.createElement("li")
+    li.className="list-group-item"
+    li.appendChild(document.createTextNode(`Name-${data.name} Total Expense-${data.totalexpense}`))
+    expenses[1].appendChild(li)
+}
+
 window.addEventListener("DOMContentLoaded",async ()=>{
     try{
-    const token=localStorage.getItem("token")    
+    const token=localStorage.getItem("token")
+    //const ispremium=localStorage.getItem("ispremium")    
     const res=await axios.get("http://localhost:4000/expense/list",{headers:{"Authorization":token}})
-        console.log(res.data)
-        if(res.data.ispremiumuser===null)
+        if(res.data.ispremiumuser===true)
         {
-            const premiumbutton=document.createElement("button")
-            premiumbutton.id="rzp-button1"
-            premiumbutton.classList="btn btn-dark mt-3"
-            premiumbutton.appendChild(document.createTextNode("Buy Premium"))
-
-            premiumcol.appendChild(premiumbutton)
+            premiumcol.innerHTML="<p style='color:blue;'>You are a premium user <button id='lb-button' class='btn btn-dark'>Show Leaderboard</button></p>"
         }
-        res.data.result.forEach(element => {
+        
+        res.data.expense.forEach(element => {
             showexpenseonscreen(element)
         });
     }
@@ -31,8 +35,27 @@ window.addEventListener("DOMContentLoaded",async ()=>{
     }
 })
 
-document.getElementById('premiumcol').onclick = async function(e){
-if(e.target.id==="rzp-button1"){
+premiumcol.onclick=async function(e)
+{
+    if(e.target.id==="lb-button")
+    {
+        try{
+        const res=await axios.get("http://localhost:4000/premium/leaderboard")
+        document.getElementById("lb-header").textContent="Leader Board"
+        expenses[1].innerHTML=""
+        res.data.forEach(data=>showleaderboardonscreen(data))
+        console.log(res)
+        }
+        catch(err)
+        {
+                error.innerHTML="<h4 style='color:red;'>Something went wrong! </h4>"
+                setTimeout(()=>error.lastChild.remove(),5000)
+                console.log(err)   
+        }
+    }
+}
+
+document.getElementById("rzp-button1").onclick = async function(e){
 try{
 const token =localStorage.getItem("token")
 const response = await axios.get("http://localhost:4000/purchase/primemembership",{headers:{"Authorization":token}})
@@ -51,6 +74,7 @@ var options = {
         // console.log(response.razorpay_payment_id);
         // console.log(response.razorpay_order_id);
         // console.log(response.razorpay_signature)
+        document.getElementById("premiumcol").innerHTML="<p style='color:blue;'>You are a premium user <button id='lb-button' class='btn btn-dark'> Show Leaderboard</button></p>";
         alert("Transaction Successful")
         alert("you are a premium member now!")
         }
@@ -81,7 +105,7 @@ catch(err){
     setTimeout(()=>error.lastChild.remove(),5000)
 }
 }
-}
+
 
 
 form.addEventListener("submit",onsubmit);
@@ -92,24 +116,29 @@ function showexpenseonscreen(data)
         li.className="list-group-item";
         const exp=document.createTextNode(data.expense);
         li.appendChild(exp)
-        li.appendChild(document.createTextNode("-"))
-        const des=document.createTextNode(data.description)
-        li.appendChild(des)
+
         li.appendChild(document.createTextNode("-"))
         const category=document.createTextNode(data.category)
         li.appendChild(category)
-        li.style.color="red"
-        li.style.fontSize="20px";
-        li.style.margin="10px";
-        
 
+        li.appendChild(document.createTextNode("-"))
+        const des=document.createTextNode(data.description)
+        li.appendChild(des)
+        
+        // li.style.color="red"
+        // li.style.fontSize="15px";
+        // li.style.margin="10px";
+        
         const input=document.createElement("input")
         input.setAttribute("type","submit")
         input.setAttribute("value","Delete")
+        input.style.marginLeft="5px"
         li.appendChild(input)
 
         const edit=document.createElement("button")
         edit.appendChild(document.createTextNode("Edit"))
+        edit.style.borderWidth="1px";
+        edit.style.marginLeft="5px";
         edit.setAttribute("value","Edit")
         li.appendChild(edit);
         expenses[0].appendChild(li);
@@ -177,15 +206,8 @@ async function onsubmit(e)
         {   try{
             const token =localStorage.getItem("token")
             const res=await axios.delete(`http://localhost:4000/expense/delete/${e.target.parentElement.id}`,{headers:{"Authorization":token}})
-                expenses[0].removeChild(e.target.parentElement)
-                console.log(res)}
-            catch(err){
-            error.innerHTML="<h4 style='color:red;'>Something went wrong! </h4>"
-            setTimeout(()=>error.lastChild.remove(),5000)
-            console.log(err)
-            }
+            expenses[0].removeChild(e.target.parentElement)
             let de = e.target.parentElement.childNodes[2].textContent
-            //localStorage.removeItem(de);
             desc.value=de
     
             let ex = e.target.parentElement.childNodes[0].textContent
@@ -193,7 +215,13 @@ async function onsubmit(e)
     
             let c= e.target.parentElement.childNodes[4].textContent
             cat.value=c;
-    
+                console.log(res)
+            }
+            catch(err){
+            error.innerHTML="<h4 style='color:red;'>Something went wrong! </h4>"
+            setTimeout(()=>error.lastChild.remove(),5000)
+            console.log(err)
+            }
         }
     })
     

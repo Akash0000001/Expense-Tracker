@@ -14,9 +14,9 @@ exports.addexpense=async (req,res,next)=>{
 
 exports.getexpenses=async (req,res,next)=>{
     try{
-    const result=await req.user.getExpenses()
+    const expense=await req.user.getExpenses()
     
-    res.json({result,ispremiumuser:req.user.ispremiumuser})
+    res.json({expense,ispremiumuser:req.user.ispremiumuser})
     
     }
     catch(err){

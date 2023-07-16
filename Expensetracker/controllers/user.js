@@ -19,9 +19,9 @@ catch(err)
 }
 })
 }
-function generateaccesstoken(id,name)
+function generateaccesstoken(id,name,ispremiumuser)
 {
-    return jwt.sign({userId:id,name:name},'23467tyvvchgdhhafugfyfgaygayg344545654645324')
+    return jwt.sign({userId:id,name:name,ispremiumuser:ispremiumuser},'23467tyvvchgdhhafugfyfgaygayg344545654645324')
 }
 exports.authorizeuser=async (req,res,next)=>{
     try{
@@ -37,7 +37,7 @@ exports.authorizeuser=async (req,res,next)=>{
                     }
                     if(result===true)
                     {
-                        res.status(200).json({success:true,message:"User logged in successfully",token:generateaccesstoken(users[i].id,users[i].Name)})
+                        res.status(200).json({success:true,message:"User logged in successfully",token:generateaccesstoken(users[i].id,users[i].Name,users[i].ispremiumuser)})
                     }
                     else
                     {

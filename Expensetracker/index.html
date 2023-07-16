@@ -9,7 +9,7 @@
   <body>
     <div class="container mt-3">
         <div class="row">
-            <div class="col-10"> 
+            <div class="col-12">
                 <form action="#" id="form" autocomplete="on">
                     <div class="row">
                         <div class="col-md-3 col-8">
@@ -20,13 +20,13 @@
                             <label for="description" class="form-label">Choose a description</label>
                             <input type="text" class="form-control" id="description">
                         </div>
-                        <div class="col-md-3 col-8">
+                        <div class="col-md-2 col-8">
                             <label for="category" class="form-label">Choose a category</label>
                             <select id="category"class="form-select-sm">
                                 <option>Food</option>
                                 <option>Clothes</option>
                                 <option>Movie</option>
-                                <option>Petrol</option>
+                                <option>Fuel</option>
                                 <option>Grocery</option>
                             </select>
                         </div>
@@ -36,11 +36,14 @@
                     </div>
                 </form>
             </div>
-            <div class="col" id="premiumcol">
-            <!----   <button class="btn btn-dark mt-3" id="rzp-button1">Buy Premium</button>-->
+            <div class="col mt-3" id="premiumcol">
+               <button class="btn btn-dark" id="rzp-button1">Buy Premium</button>
             </div>
         </div>
-        <ul class="list-group"style="width:50%;"></ul>
+        <h1>Expenses</h1>
+        <ul class="list-group"></ul>
+        <h3 id="lb-header"class="mt-3"></h3>
+        <ul id="leaderboard"class="list-group"></ul>
         <p class="error"></p>
     </div>
     <script src="Dom.js"></script>
