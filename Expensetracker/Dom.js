@@ -174,7 +174,7 @@ async function onsubmit(e)
             cat.value=""
         }
         catch(err){
-        error.innerHTML="<h4 style='color:red;'>Something went wrong! </h4>"
+        error.innerHTML=`<h4 style='color:red;'>Error:${err.message}</h4>`
         setTimeout(()=>error.lastChild.remove(),5000)
         console.log(err)
         }

@@ -5,7 +5,8 @@ const Sequelize=require("sequelize")
 
 exports.leaderboard=async (req,res,next)=>{
 try{
-    const leaderboard=await User.findAll()
+    await User.update({totalexpenses:0},{where:{totalexpenses:null}})
+    const leaderboard=await User.findAll({attributes:["id","Name","totalexpenses"]})
     leaderboard.sort((a,b)=>b.totalexpenses-a.totalexpenses)
     // const leaderboard= await User.findAll({
     //     attributes:["id","Name",[sequelize.fn("sum",sequelize.col("expenses.expense")),"totalexpense"]],
