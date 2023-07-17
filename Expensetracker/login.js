@@ -2,6 +2,7 @@ const Email=document.getElementById("email")
 const Password=document.getElementById("password")
 const form=document.getElementById("form")
 const msg=document.getElementById("msg")
+const forgetpassword=document.getElementById("fp")
 
 form.addEventListener("submit",onsubmit)
 async function onsubmit(e)
@@ -27,4 +28,7 @@ async function onsubmit(e)
         setTimeout(()=>msg.firstChild.remove(),5000)
         console.log(err)
     }
+}
+forgetpassword.onclick=async (e)=>{
+    window.location.href="E:/Akash content/gitstart/Expensetracker/forgetpassword.html"
 }
