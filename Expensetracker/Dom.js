@@ -10,7 +10,7 @@ function showleaderboardonscreen(data)
 {
     const li=document.createElement("li")
     li.className="list-group-item"
-    li.appendChild(document.createTextNode(`Name-${data.Name} Total Expense-${data.totalexpense}`))
+    li.appendChild(document.createTextNode(`Name-${data.Name} Total Expense-${data.totalexpenses}`))
     expenses[1].appendChild(li)
 }
 

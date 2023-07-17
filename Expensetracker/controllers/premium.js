@@ -5,16 +5,18 @@ const Sequelize=require("sequelize")
 
 exports.leaderboard=async (req,res,next)=>{
 try{
-    const leaderboard= await User.findAll({
-        attributes:["id","Name",[sequelize.fn("sum",sequelize.col("expenses.expense")),"totalexpense"]],
-        include:[
-        {
-            model:Expense,
-            attributes:[]
-        }],
-        group:["users.id"],
-        order:[["totalexpense","DESC"]]
-    })
+    const leaderboard=await User.findAll()
+    leaderboard.sort((a,b)=>b.totalexpenses-a.totalexpenses)
+    // const leaderboard= await User.findAll({
+    //     attributes:["id","Name",[sequelize.fn("sum",sequelize.col("expenses.expense")),"totalexpense"]],
+    //     include:[
+    //     {
+    //         model:Expense,
+    //         attributes:[]
+    //     }],
+    //     group:["users.id"],
+    //     order:[["totalexpense","DESC"]]
+    // })
         
 //     const aggregatedexpenses=await Expense.findAll(
 //         {
