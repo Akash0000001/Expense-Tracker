@@ -12,11 +12,8 @@ async function onsubmit(e)
     const user ={Name:Name.value,Email:Email.value,Password:Password.value}
     try{
     const res=await axios.post("http://localhost:4000/user/signup",user)
-        message.innerText=res.data;
-        setTimeout(()=>message.firstChild.remove(),5000)
-        Name.value="";
-        Email.value="";
-        Password.value="";
+        
+        window.location.href="loggin.hhtml"
     }
     catch(err){
         if(err.response && err.response.data.name==="SequelizeUniqueConstraintError")

@@ -1,6 +1,7 @@
 const Email=document.getElementById("email")
 const Password=document.getElementById("password")
 const form=document.getElementById("form")
+const signup=document.getElementById("signup")
 const msg=document.getElementById("msg")
 const forgotpassword=document.getElementById("fp")
 
@@ -29,6 +30,11 @@ async function onsubmit(e)
         console.log(err)
     }
 }
+
+signup.onclick=async (e)=>{
+    window.location.href="signup.html"
+}
+
 forgotpassword.onclick=async (e)=>{
     window.location.href="E:/Akash content/gitstart/Expensetracker/forgotpassword.html"
 }
