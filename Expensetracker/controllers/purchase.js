@@ -1,7 +1,7 @@
 const Razorpay=require("razorpay")
 const Order=require("../models/order")
 require("dotenv").config()
-
+//console.log(process.env.Razorpay_Key_id)
 exports.purchasemembership=async (req,res,next)=>{
  try{
     const rzp=new Razorpay({
