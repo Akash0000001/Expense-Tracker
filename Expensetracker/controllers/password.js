@@ -58,7 +58,22 @@ try{
     const request=await ForgetPasswordRequest.findAll({where:{id:uuid,isactive:true}})
     if(request.length>0)
     {
-        return res.sendFile(path.join(__dirname,"../","resetpassword.html"))
+        //return res.sendFile(path.join(__dirname,"../","resetpassword.html"))
+        return res.status(200).send(`<!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>reset password</title>
+        </head>
+        <body>
+           <form action="/password/postresetpassword/${uuid}">
+            <label for="password">Enter new password: </label>
+            <input type="password" id="password" name="newpassword" required>
+            <input type="submit" value="Reset Password">
+           </form> 
+        </body>
+        </html>`)
     }
     
         throw new Error("Link not found")
@@ -75,17 +90,18 @@ catch(err)
 exports.postresetpassword=async(req,res,next)=>{
     try{
     const uuid=req.params.uuid
+    console.log(req.query)
     const request=await ForgetPasswordRequest.findAll({where:{id:uuid,isactive:true}})
     if(request.length>0)
     {
-        bcrypt.hash(req.body.Password,10,async(err,hash)=>{
+        bcrypt.hash(req.query.newpassword,10,async(err,hash)=>{
             if(err)
             {
                 throw new Error(err)
             }
             await User.update({Password:hash},{where:{id:request[0].userId}})
             await request[0].update({isactive:false})
-            res.status(200).json("Password reset successful")
+            res.status(200).send('<html><title>"Successful"</title><body><h1>Password Reset Successful</h1></body></html>')
         })
     }
     else{
@@ -95,6 +111,6 @@ exports.postresetpassword=async(req,res,next)=>{
 }
 catch(err)
 {
-    res.status(400).json(err)
+    res.status(400).json({message:err.message,success:false})
 }
 }
