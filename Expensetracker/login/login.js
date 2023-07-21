@@ -15,7 +15,7 @@ async function onsubmit(e)
     alert(res.data.message)
     localStorage.setItem("token",res.data.token)
     //localStorage.setItem("ispremium",res.data.ispremium)
-    window.location.assign("index.html")
+    window.location.assign("../index.html")
     }
     catch(err){
         if(err.response)
@@ -32,7 +32,7 @@ async function onsubmit(e)
 }
 
 signup.onclick=async (e)=>{
-    window.location.href="signup.html"
+    window.location.href="../Signup/signup.html"
 }
 
 forgotpassword.onclick=async (e)=>{

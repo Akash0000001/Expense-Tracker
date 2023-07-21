@@ -11,6 +11,15 @@ function showleaderboardonscreen(data)
     const li=document.createElement("li")
     li.className="list-group-item"
     li.appendChild(document.createTextNode(`Name-${data.Name} Total Expense-${data.totalexpenses}`))
+    expenses[2].appendChild(li)
+}
+function showdownloadedfilesurlonscreen(data)
+{
+    const li=document.createElement("li")
+    li.id=data.id
+    li.className="list-group-item"
+    li.innerHTML=`${new Date(data.createdAt).toLocaleString('en-US', {timeZone: 'Asia/Kolkata'})
+} IST(Indian Standard Time) - <a href=${data.url}>download file</a>`
     expenses[1].appendChild(li)
 }
 
@@ -21,7 +30,10 @@ window.addEventListener("DOMContentLoaded",async ()=>{
     const res=await axios.get("http://localhost:4000/expense/list",{headers:{"Authorization":token}})
         if(res.data.ispremiumuser===true)
         {
-            premiumcol.innerHTML="<p style='color:blue;'>You are a premium user <button id='lb-button' class='btn btn-dark'>Show Leaderboard</button></p>"
+        document.getElementById("premiumcol").innerHTML="<p style='color:blue;'>You are a premium user </p>";
+        document.getElementById("leaderboardcol").innerHTML="<button id='lb-button'> Show Leaderboard</button>"
+        document.getElementById("downloadfiles-header").textContent="Downloaded Files Urls"
+        res.data.filesurl.forEach(url=>showdownloadedfilesurlonscreen(url))
         }
         
         res.data.expense.forEach(element => {
@@ -34,15 +46,14 @@ window.addEventListener("DOMContentLoaded",async ()=>{
         console.log(err)
     }
 })
-
-premiumcol.onclick=async function(e)
+document.getElementById("leaderboardcol").onclick=async function(e)
 {
     if(e.target.id==="lb-button")
     {
         try{
         const res=await axios.get("http://localhost:4000/premium/leaderboard")
         document.getElementById("lb-header").textContent="Leader Board"
-        expenses[1].innerHTML=""
+        expenses[2].innerHTML=""
         res.data.forEach(data=>showleaderboardonscreen(data))
         console.log(res)
         }
@@ -74,7 +85,9 @@ var options = {
         // console.log(response.razorpay_payment_id);
         // console.log(response.razorpay_order_id);
         // console.log(response.razorpay_signature)
-        document.getElementById("premiumcol").innerHTML="<p style='color:blue;'>You are a premium user <button id='lb-button' class='btn btn-dark'> Show Leaderboard</button></p>";
+        document.getElementById("premiumcol").innerHTML="<p style='color:blue;'>You are a premium user </p>";
+        document.getElementById("leaderboardcol").innerHTML="<p><button id='lb-button'> Show Leaderboard</button></p>"
+        document.getElementById("downloadedfiles-header").textContent="Downloaded Files Urls"
         alert("Transaction Successful")
         alert("you are a premium member now!")
         }
@@ -101,12 +114,37 @@ var rzp1 = new Razorpay(options);
 }
 catch(err){
     console.log(err)
-    error.innerHTML="<h4 style='color:red;'>Something went wrong! </h4>"
+    error.innerHTML=`<h4 style='color:red;'> ${err} </h4>`
     setTimeout(()=>error.lastChild.remove(),5000)
 }
 }
 
+document.getElementById("download").onclick=async (e)=>{
+try{
+    const token=localStorage.getItem("token")
+    const res=await axios.get("http://localhost:4000/expense/Download",{headers:{"Authorization":token}})
+    console.log(res)
 
+    showdownloadedfilesurlonscreen(res.data.result)
+    const a=document.createElement("a")
+    a.href=res.data.result.url;
+    a.download="myexpense.txt";
+    a.click();
+}
+catch(err)
+{
+   console.log(err)
+   if(err.response)
+   {
+   error.innerHTML=`<h3>Error: ${err.message}-${err.response.statusText}</h3>`
+   }
+   else{
+    error.innerHTML=`<h3>Error: ${err.message}</h3>`
+   }
+   error.style.color="red";
+   setTimeout(()=>error.firstChild.remove(),5000)
+}
+}
 
 form.addEventListener("submit",onsubmit);
 function showexpenseonscreen(data)

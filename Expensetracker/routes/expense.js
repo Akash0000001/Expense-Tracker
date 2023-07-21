@@ -5,6 +5,7 @@ const expensecontroller=require("../controllers/expense")
 router.post("/add",authenticate,expensecontroller.addexpense)
 router.get("/list",authenticate,expensecontroller.getexpenses)
 router.delete("/delete/:expenseid",authenticate,expensecontroller.deleteexpense)
+router.get("/Download",authenticate,expensecontroller.downloadexpenses)
 
 module.exports=router;
 

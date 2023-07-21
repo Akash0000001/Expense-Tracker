@@ -1,6 +1,6 @@
 const Razorpay=require("razorpay")
 const Order=require("../models/order")
-require("dotenv").config()
+//require("dotenv").config()
 //console.log(process.env.Razorpay_Key_id)
 exports.purchasemembership=async (req,res,next)=>{
  try{
@@ -10,17 +10,17 @@ exports.purchasemembership=async (req,res,next)=>{
     })
     const amount=2500;
     rzp.orders.create({amount,currency:"INR"},async (err,order)=>{
+    try{
         if(err)
-        {
+        {  
             throw new Error(JSON.stringify(err))
         }
-        try{
         await req.user.createOrder({orderid:order.id,status:"PENDING"})
         return res.status(201).json({order,key_id:rzp.key_id})
         }
         catch(err)
-        {
-            res.status(404).json(err)
+        {   
+            res.status(404).json(err.message)
         }
 })
 }
