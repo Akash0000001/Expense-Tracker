@@ -6,7 +6,6 @@ const expenses=document.getElementsByClassName("list-group")
 const error=document.querySelector(".error")
 const premiumcol=document.getElementById("premiumcol")
 const pagination=document.getElementById("pagination")
-console.log(expenses)
 
 function showleaderboardonscreen(data)
 {
@@ -28,11 +27,10 @@ function showdownloadedfilesurlonscreen(data)
 
 window.addEventListener("DOMContentLoaded",async ()=>{
     try{
-    const token=localStorage.getItem("token")
-    //const ispremium=localStorage.getItem("ispremium")    
+    const token=localStorage.getItem("token")    
     const page=1;
-    const res=await axios.get(`http://localhost:4000/expense/list?page=${page}`,{headers:{"Authorization":token,rowsperpage:localStorage.getItem("rowsperpage")}})
-    //console.log(res)
+    const res=await axios.get(`http://localhost:4000/expense/list?page=${page}&rowsperpage=${localStorage.getItem("rowsperpage")}`,{headers:{"Authorization":token}})
+
         if(res.data.ispremiumuser===true)
         {
         document.getElementById("premiumcol").innerHTML="<p style='color:blue;'>You are a premium user </p>";
@@ -48,9 +46,8 @@ window.addEventListener("DOMContentLoaded",async ()=>{
         showpagination(res.data.pagedetails)
     }
     catch(err){
-        error.innerHTML="<h4 style='color:red;'>Something went wrong! </h4>"
+        error.innerHTML=`<h4 style='color:red;'>${err.message}</h4>`
         setTimeout(()=>error.lastChild.remove(),5000)
-        console.log(err)
     }
 })
 async function showpagination(pagedetails)
@@ -61,6 +58,7 @@ async function showpagination(pagedetails)
     {
         const btn1=document.createElement("button")
         btn1.innerHTML=pagedetails.previouspage;
+        btn1.style.position="relative"
         btn1.className="btn btn-primary";
         btn1.onclick=async(e)=>{
             
@@ -93,9 +91,8 @@ async function getexpenses(page)
 {
     try{
         const token=localStorage.getItem("token")
-        //const ispremium=localStorage.getItem("ispremium")
         const rowsperpage=localStorage.getItem("rowsperpage")    
-        const res=await axios.get(`http://localhost:4000/expense/list?page=${page}`,{headers:{"Authorization":token,rowsperpage:rowsperpage}})
+        const res=await axios.get(`http://localhost:4000/expense/list?page=${page}&rowsperpage=${rowsperpage}`,{headers:{"Authorization":token}})
             if(res.data.ispremiumuser===true)
             {
             document.getElementById("premiumcol").innerHTML="<p style='color:blue;'>You are a premium user </p>";
@@ -111,9 +108,8 @@ async function getexpenses(page)
             showpagination(res.data.pagedetails)
         }
         catch(err){
-            error.innerHTML="<h4 style='color:red;'>Something went wrong! </h4>"
+            error.innerHTML=`<h4 style='color:red;'>${err.message} </h4>`
             setTimeout(()=>error.lastChild.remove(),5000)
-            console.log(err)
         }
 }
 
@@ -121,6 +117,8 @@ document.getElementById("rows-form").onsubmit=async(e)=>{
     e.preventDefault()
     const rowsperpage=document.getElementById("rows").value
     localStorage.setItem("rowsperpage",rowsperpage)
+   getexpenses(1)
+
 }
 
 document.getElementById("leaderboardcol").onclick=async function(e)
@@ -135,9 +133,8 @@ document.getElementById("leaderboardcol").onclick=async function(e)
         }
         catch(err)
         {
-                error.innerHTML="<h4 style='color:red;'>Something went wrong! </h4>"
-                setTimeout(()=>error.lastChild.remove(),5000)
-                console.log(err)   
+                error.innerHTML=`<h4 style='color:red;'>${err.message} </h4>`
+                setTimeout(()=>error.lastChild.remove(),5000)  
         }
     }
 }
@@ -168,7 +165,8 @@ var options = {
         alert("you are a premium member now!")
         }
         catch(err){
-            console.log(err)
+            error.innerHTML=`<h4 style='color:red;'>${err.message} </h4>`
+            setTimeout(()=>error.lastChild.remove(),5000)
         }
     },
 };
@@ -184,12 +182,12 @@ var rzp1 = new Razorpay(options);
         alert("Transaction Failed")
         }
         catch(err){
-            console.log(err)
+            error.innerHTML=`<h4 style='color:red;'>${err.message} </h4>`
+            setTimeout(()=>error.lastChild.remove(),5000)
         }
     })
 }
 catch(err){
-    console.log(err)
     error.innerHTML=`<h4 style='color:red;'> ${err} </h4>`
     setTimeout(()=>error.lastChild.remove(),5000)
 }
@@ -209,7 +207,7 @@ try{
 }
 catch(err)
 {
-   console.log(err)
+
    if(err.response)
    {
    error.innerHTML=`<h3>Error: ${err.message}-${err.response.statusText}</h3>`
@@ -290,7 +288,6 @@ async function onsubmit(e)
         catch(err){
         error.innerHTML=`<h4 style='color:red;'>Error:${err.message}</h4>`
         setTimeout(()=>error.lastChild.remove(),5000)
-        console.log(err)
         }
         
     }
@@ -311,9 +308,8 @@ async function onsubmit(e)
                 expenses[0].removeChild(e.target.parentElement)
                 console.log(res)}
             catch(err){
-            error.innerHTML="<h4 style='color:red;'>Something went wrong! </h4>"
+            error.innerHTML=`<h4 style='color:red;'>${err}</h4>`
             setTimeout(()=>error.lastChild.remove(),5000)
-            console.log(err)
             }
         }
         else if(e.target.value==="Edit")
@@ -329,12 +325,10 @@ async function onsubmit(e)
     
             let c= e.target.parentElement.childNodes[4].textContent
             cat.value=c;
-                console.log(res)
             }
             catch(err){
-            error.innerHTML="<h4 style='color:red;'>Something went wrong! </h4>"
+            error.innerHTML=`<h4 style='color:red;'>${err.message} </h4>`
             setTimeout(()=>error.lastChild.remove(),5000)
-            console.log(err)
             }
         }
     })

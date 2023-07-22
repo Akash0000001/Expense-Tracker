@@ -27,11 +27,10 @@ exports.addexpense=async (req,res,next)=>{
 
 exports.getexpenses=async (req,res,next)=>{
     try{
-    const rowsperpage=parseInt(req.header("rowsperpage"))||10;
+    const rowsperpage=parseInt(req.query.rowsperpage)||10;
     const expense=await req.user.getExpenses()
-    const totalurls=await DownloadedFilesUrl.count()
-    const totalpages=Math.max(parseInt((expense.length-1)/rowsperpage)+1,parseInt((totalurls-1)/rowsperpage)+1)
-    ///console.log(totalpages)
+    const totalurls=await req.user.getDownloadedfilesurls()
+    const totalpages=Math.max(parseInt((expense.length-1)/rowsperpage)+1,parseInt((totalurls.length-1)/rowsperpage)+1)
     const page=parseInt(req.query.page);
     const haspreviouspage=page===1?false:true;
     const hasnextpage=page<totalpages?true:false;
@@ -39,8 +38,7 @@ exports.getexpenses=async (req,res,next)=>{
     const nextpage=hasnextpage?page+1:null;
     const pagedetails={haspreviouspage:haspreviouspage,hasnextpage:hasnextpage,previouspage:previouspage,nextpage:nextpage,currentpage:page}
     const expenseperpage=[]
-    //console.log(pagedetails)
-    for(let i=(page-1)*rowsperpage;i<rowsperpage*page-1 && i<expense.length;i++)
+    for(let i=(page-1)*rowsperpage;i<rowsperpage*page && i<expense.length;i++)
     {
         expenseperpage.push(expense[i])
     }
