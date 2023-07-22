@@ -27,11 +27,11 @@ exports.addexpense=async (req,res,next)=>{
 
 exports.getexpenses=async (req,res,next)=>{
     try{
+    const rowsperpage=parseInt(req.header("rowsperpage"))||10;
     const expense=await req.user.getExpenses()
     const totalurls=await DownloadedFilesUrl.count()
-    console.log(totalurls)
-    const totalpages=Math.max(parseInt((expense.length-1)/10)+1,parseInt((totalurls-1)/10)+1)
-    console.log(totalpages)
+    const totalpages=Math.max(parseInt((expense.length-1)/rowsperpage)+1,parseInt((totalurls-1)/rowsperpage)+1)
+    ///console.log(totalpages)
     const page=parseInt(req.query.page);
     const haspreviouspage=page===1?false:true;
     const hasnextpage=page<totalpages?true:false;
@@ -39,13 +39,13 @@ exports.getexpenses=async (req,res,next)=>{
     const nextpage=hasnextpage?page+1:null;
     const pagedetails={haspreviouspage:haspreviouspage,hasnextpage:hasnextpage,previouspage:previouspage,nextpage:nextpage,currentpage:page}
     const expenseperpage=[]
-    console.log(pagedetails)
-    for(let i=(page-1)*10;i<10*page-1 && i<expense.length;i++)
+    //console.log(pagedetails)
+    for(let i=(page-1)*rowsperpage;i<rowsperpage*page-1 && i<expense.length;i++)
     {
         expenseperpage.push(expense[i])
     }
     
-    const listFilesUrl=await DownloadedFilesUrl.findAll({where:{userId:req.user.id},offset:(page-1)*10,limit:10})
+    const listFilesUrl=await DownloadedFilesUrl.findAll({where:{userId:req.user.id},offset:(page-1)*rowsperpage,limit:rowsperpage})
     
     res.json({expenseperpage,ispremiumuser:req.user.ispremiumuser,pagedetails,filesurl:listFilesUrl})
     

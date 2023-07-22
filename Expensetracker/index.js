@@ -31,7 +31,7 @@ window.addEventListener("DOMContentLoaded",async ()=>{
     const token=localStorage.getItem("token")
     //const ispremium=localStorage.getItem("ispremium")    
     const page=1;
-    const res=await axios.get(`http://localhost:4000/expense/list?page=${page}`,{headers:{"Authorization":token}})
+    const res=await axios.get(`http://localhost:4000/expense/list?page=${page}`,{headers:{"Authorization":token,rowsperpage:localStorage.getItem("rowsperpage")}})
     //console.log(res)
         if(res.data.ispremiumuser===true)
         {
@@ -93,8 +93,9 @@ async function getexpenses(page)
 {
     try{
         const token=localStorage.getItem("token")
-        //const ispremium=localStorage.getItem("ispremium")    
-        const res=await axios.get(`http://localhost:4000/expense/list?page=${page}`,{headers:{"Authorization":token}})
+        //const ispremium=localStorage.getItem("ispremium")
+        const rowsperpage=localStorage.getItem("rowsperpage")    
+        const res=await axios.get(`http://localhost:4000/expense/list?page=${page}`,{headers:{"Authorization":token,rowsperpage:rowsperpage}})
             if(res.data.ispremiumuser===true)
             {
             document.getElementById("premiumcol").innerHTML="<p style='color:blue;'>You are a premium user </p>";
@@ -114,6 +115,12 @@ async function getexpenses(page)
             setTimeout(()=>error.lastChild.remove(),5000)
             console.log(err)
         }
+}
+
+document.getElementById("rows-form").onsubmit=async(e)=>{
+    e.preventDefault()
+    const rowsperpage=document.getElementById("rows").value
+    localStorage.setItem("rowsperpage",rowsperpage)
 }
 
 document.getElementById("leaderboardcol").onclick=async function(e)
