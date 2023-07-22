@@ -5,40 +5,47 @@ const cat=document.getElementById("category")
 const expenses=document.getElementsByClassName("list-group")
 const error=document.querySelector(".error")
 const premiumcol=document.getElementById("premiumcol")
+const pagination=document.getElementById("pagination")
+console.log(expenses)
 
 function showleaderboardonscreen(data)
 {
     const li=document.createElement("li")
     li.className="list-group-item"
     li.appendChild(document.createTextNode(`Name-${data.Name} Total Expense-${data.totalexpenses}`))
-    expenses[2].appendChild(li)
+    document.getElementById("leaderboard").appendChild(li)
 }
 function showdownloadedfilesurlonscreen(data)
 {
     const li=document.createElement("li")
     li.id=data.id
     li.className="list-group-item"
+    li.style.fontSize="13px"
     li.innerHTML=`${new Date(data.createdAt).toLocaleString('en-US', {timeZone: 'Asia/Kolkata'})
 } IST(Indian Standard Time) - <a href=${data.url}>download file</a>`
-    expenses[1].appendChild(li)
+    document.getElementById("files-list").appendChild(li)
 }
 
 window.addEventListener("DOMContentLoaded",async ()=>{
     try{
     const token=localStorage.getItem("token")
     //const ispremium=localStorage.getItem("ispremium")    
-    const res=await axios.get("http://localhost:4000/expense/list",{headers:{"Authorization":token}})
+    const page=1;
+    const res=await axios.get(`http://localhost:4000/expense/list?page=${page}`,{headers:{"Authorization":token}})
+    //console.log(res)
         if(res.data.ispremiumuser===true)
         {
         document.getElementById("premiumcol").innerHTML="<p style='color:blue;'>You are a premium user </p>";
         document.getElementById("leaderboardcol").innerHTML="<button id='lb-button'> Show Leaderboard</button>"
         document.getElementById("downloadfiles-header").textContent="Downloaded Files Urls"
-        res.data.filesurl.forEach(url=>showdownloadedfilesurlonscreen(url))
+         res.data.filesurl.forEach(url=>showdownloadedfilesurlonscreen(url))
         }
         
-        res.data.expense.forEach(element => {
+        res.data.expenseperpage.forEach(element => {
             showexpenseonscreen(element)
         });
+    
+        showpagination(res.data.pagedetails)
     }
     catch(err){
         error.innerHTML="<h4 style='color:red;'>Something went wrong! </h4>"
@@ -46,6 +53,69 @@ window.addEventListener("DOMContentLoaded",async ()=>{
         console.log(err)
     }
 })
+async function showpagination(pagedetails)
+
+{
+    pagination.innerHTML=""
+    if(pagedetails.haspreviouspage)
+    {
+        const btn1=document.createElement("button")
+        btn1.innerHTML=pagedetails.previouspage;
+        btn1.className="btn btn-primary";
+        btn1.onclick=async(e)=>{
+            
+            getexpenses(pagedetails.previouspage)
+
+        }
+        pagination.appendChild(btn1)
+    }
+    const btn2=document.createElement("button")
+        btn2.innerHTML=pagedetails.currentpage;
+        btn2.className="btn btn-primary";
+        btn2.onclick=async(e)=>{
+            
+            getexpenses(pagedetails.currentpage)
+
+        }
+        pagination.appendChild(btn2)
+    if(pagedetails.hasnextpage)
+    {
+        const btn3=document.createElement("button")
+        btn3.innerHTML=pagedetails.nextpage;
+        btn3.className="btn btn-primary";
+        btn3.onclick=async(e)=>{
+            getexpenses(pagedetails.nextpage)
+        }
+        pagination.appendChild(btn3)
+    }
+}
+async function getexpenses(page)
+{
+    try{
+        const token=localStorage.getItem("token")
+        //const ispremium=localStorage.getItem("ispremium")    
+        const res=await axios.get(`http://localhost:4000/expense/list?page=${page}`,{headers:{"Authorization":token}})
+            if(res.data.ispremiumuser===true)
+            {
+            document.getElementById("premiumcol").innerHTML="<p style='color:blue;'>You are a premium user </p>";
+            document.getElementById("leaderboardcol").innerHTML="<button id='lb-button'> Show Leaderboard</button>"
+             document.getElementById("downloadfiles-header").textContent="Downloaded Files Urls"
+             document.getElementById("files-list").innerHTML=""
+            res.data.filesurl.forEach(url=>showdownloadedfilesurlonscreen(url))
+            }
+            expenses[0].innerHTML=""
+            res.data.expenseperpage.forEach(element => {
+                showexpenseonscreen(element)
+            });
+            showpagination(res.data.pagedetails)
+        }
+        catch(err){
+            error.innerHTML="<h4 style='color:red;'>Something went wrong! </h4>"
+            setTimeout(()=>error.lastChild.remove(),5000)
+            console.log(err)
+        }
+}
+
 document.getElementById("leaderboardcol").onclick=async function(e)
 {
     if(e.target.id==="lb-button")
@@ -53,9 +123,8 @@ document.getElementById("leaderboardcol").onclick=async function(e)
         try{
         const res=await axios.get("http://localhost:4000/premium/leaderboard")
         document.getElementById("lb-header").textContent="Leader Board"
-        expenses[2].innerHTML=""
+        document.getElementById("leaderboard").innerHTML="";
         res.data.forEach(data=>showleaderboardonscreen(data))
-        console.log(res)
         }
         catch(err)
         {
@@ -148,10 +217,11 @@ catch(err)
 
 form.addEventListener("submit",onsubmit);
 function showexpenseonscreen(data)
-{
+{       
         const li=document.createElement("li")
         li.id=data.id;
         li.className="list-group-item";
+        //li.style.fontSize="12px"
         const exp=document.createTextNode(data.expense);
         li.appendChild(exp)
 
@@ -186,13 +256,12 @@ async function onsubmit(e)
     e.preventDefault()
     if(expense.value=="" || desc.value=="" || cat.value=="" )
     {
-        const b=document.querySelector("body")
         const h3=document.createElement("h3")
         h3.appendChild(document.createTextNode("Please Enter All fields!"))
         h3.style.textAlign="center"
         h3.style.color="red";
-        b.appendChild(h3)
-        setTimeout(()=>b.lastChild.remove(),5000);
+        error.appendChild(h3)
+        setTimeout(()=>error.lastChild.remove(),5000);
 
     }
     else

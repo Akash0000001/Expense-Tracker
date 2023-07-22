@@ -3,6 +3,7 @@ const DownloadedFilesUrl=require("../models/Downloadedfiles")
 const sequelize=require("../util/database")
 const User=require("../models/user")
 const AWS=require("aws-sdk")
+const { parse } = require("dotenv")
 //require("dotenv").config()
 
 
@@ -27,9 +28,26 @@ exports.addexpense=async (req,res,next)=>{
 exports.getexpenses=async (req,res,next)=>{
     try{
     const expense=await req.user.getExpenses()
-    const listFilesUrl=await DownloadedFilesUrl.findAll({where:{userId:req.user.id}})
+    const totalurls=await DownloadedFilesUrl.count()
+    console.log(totalurls)
+    const totalpages=Math.max(parseInt((expense.length-1)/10)+1,parseInt((totalurls-1)/10)+1)
+    console.log(totalpages)
+    const page=parseInt(req.query.page);
+    const haspreviouspage=page===1?false:true;
+    const hasnextpage=page<totalpages?true:false;
+    const previouspage=haspreviouspage?page-1:0;
+    const nextpage=hasnextpage?page+1:null;
+    const pagedetails={haspreviouspage:haspreviouspage,hasnextpage:hasnextpage,previouspage:previouspage,nextpage:nextpage,currentpage:page}
+    const expenseperpage=[]
+    console.log(pagedetails)
+    for(let i=(page-1)*10;i<10*page-1 && i<expense.length;i++)
+    {
+        expenseperpage.push(expense[i])
+    }
     
-    res.json({expense,ispremiumuser:req.user.ispremiumuser,filesurl:listFilesUrl})
+    const listFilesUrl=await DownloadedFilesUrl.findAll({where:{userId:req.user.id},offset:(page-1)*10,limit:10})
+    
+    res.json({expenseperpage,ispremiumuser:req.user.ispremiumuser,pagedetails,filesurl:listFilesUrl})
     
     }
     catch(err){
