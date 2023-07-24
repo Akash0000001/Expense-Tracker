@@ -15,7 +15,7 @@ async function onsubmit(e)
     alert(res.data.message)
     localStorage.setItem("token",res.data.token)
     //localStorage.setItem("ispremium",res.data.ispremium)
-    window.location.assign("./index.html")
+    window.location.assign("/Expense/expense.html")
     }
     catch(err){
         if(err.response)

@@ -39,8 +39,7 @@ app.use("/premium",premiumrouter)
 app.use("/password",passwordrouter)
 app.use((req,res,next)=>{
     console.log("urll",req.url)
-    //res.setHeader( 'Content-Security-Policy', "script-src 'self' https://cdnjs.cloudflare.com" )
-    res.sendFile(path.join(__dirname,`${req.url}`))
+    res.sendFile(path.join(__dirname,`Frontend/${req.url}`))
 })
 
 Expense.belongsTo(User,{constrainsts:true})

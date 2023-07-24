@@ -13,7 +13,7 @@ async function onsubmit(e)
     try{
     const res=await axios.post("http://43.205.111.226:4000/user/signup",user)
         
-        window.location.href="../login/login.html"
+        window.location.href="/login/login.html"
     }
     catch(err){
         if(err.response && err.response.data.name==="SequelizeUniqueConstraintError")
