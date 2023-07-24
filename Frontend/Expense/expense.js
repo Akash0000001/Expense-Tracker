@@ -317,13 +317,13 @@ async function onsubmit(e)
             const token =localStorage.getItem("token")
             const res=await axios.delete(`http://43.205.111.226:4000/expense/delete/${e.target.parentElement.id}`,{headers:{"Authorization":token}})
             expenses[0].removeChild(e.target.parentElement)
-            let de = e.target.parentElement.childNodes[2].textContent
+            let de = e.target.parentElement.childNodes[4].textContent
             desc.value=de
     
             let ex = e.target.parentElement.childNodes[0].textContent
             expense.value=ex
     
-            let c= e.target.parentElement.childNodes[4].textContent
+            let c= e.target.parentElement.childNodes[2].textContent
             cat.value=c;
             }
             catch(err){
