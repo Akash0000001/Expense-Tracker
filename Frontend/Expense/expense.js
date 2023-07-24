@@ -97,7 +97,7 @@ async function getexpenses(page)
             {
             document.getElementById("premiumcol").innerHTML="<p style='color:blue;'>You are a premium user </p>";
             document.getElementById("leaderboardcol").innerHTML="<button id='lb-button'> Show Leaderboard</button>"
-             document.getElementById("downloadfiles-header").textContent="Downloaded Files Urls"
+             document.getElementById("downloadedfiles-header").textContent="Downloaded Files Urls"
              document.getElementById("files-list").innerHTML=""
             res.data.filesurl.forEach(url=>showdownloadedfilesurlonscreen(url))
             }
