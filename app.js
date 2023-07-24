@@ -39,7 +39,6 @@ app.use("/premium",premiumrouter)
 app.use("/password",passwordrouter)
 app.use((req,res,next)=>{
     console.log("urll=>",req.url)
-    console.log("request has arrived and ready to complete")
     res.sendFile(path.join(__dirname,`Frontend/${req.url}`))
 })
 
