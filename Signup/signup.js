@@ -11,7 +11,7 @@ async function onsubmit(e)
     e.preventDefault();
     const user ={Name:Name.value,Email:Email.value,Password:Password.value}
     try{
-    const res=await axios.post("http://localhost:4000/user/signup",user)
+    const res=await axios.post("http://43.205.111.226:4000/user/signup",user)
         
         window.location.href="../login/login.html"
     }

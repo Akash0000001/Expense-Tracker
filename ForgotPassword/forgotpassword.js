@@ -5,7 +5,7 @@ const msg=document.getElementById("msg")
 form.onsubmit=async (e)=>{
     e.preventDefault();
     try{
-    const res=await axios.post("http://localhost:4000/password/forgotpassword",{Email:email.value})
+    const res=await axios.post("http://43.205.111.226:4000/password/forgotpassword",{Email:email.value})
     msg.textContent=res.data;
     msg.style.color="blue";
     setTimeout(()=>msg.firstChild.remove(),5000)

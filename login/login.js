@@ -11,11 +11,11 @@ async function onsubmit(e)
     e.preventDefault();
     const user={Email:Email.value,Password:Password.value}
     try{
-    const res=await axios.post("http://localhost:4000/user/login",user)
+    const res=await axios.post("http://43.205.111.226:4000/user/login",user)
     alert(res.data.message)
     localStorage.setItem("token",res.data.token)
     //localStorage.setItem("ispremium",res.data.ispremium)
-    window.location.assign("../index.html")
+    window.location.assign("./index.html")
     }
     catch(err){
         if(err.response)
@@ -32,9 +32,9 @@ async function onsubmit(e)
 }
 
 signup.onclick=async (e)=>{
-    window.location.href="../Signup/signup.html"
+    window.location.href="/Signup/signup.html"
 }
 
 forgotpassword.onclick=async (e)=>{
-    window.location.href="E:/Akash content/gitstart/Expensetracker/forgotpassword.html"
+    window.location.href="/ForgotPassword/forgotpassword.html"
 }

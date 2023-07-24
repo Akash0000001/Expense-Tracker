@@ -1,8 +1,10 @@
 const express=require("express")
 const bodyparser=require("body-parser")
+const https=require("https")
 const path=require("path")
 const fs=require("fs")
 const cors=require("cors")
+require("dotenv").config();
 const sequelize=require("./util/database")
 const expenserouter=require("./routes/expense")
 const purchaserouter=require("./routes/purchase")
@@ -14,7 +16,10 @@ const User=require("./models/user")
 const Order=require("./models/order")
 const DownloadedFilesUrl=require("./models/Downloadedfiles")
 const ForgotPasswordRequests=require("./models/forgotpassword")
-require("dotenv").config();
+
+
+// const privateKey=fs.readFileSync("server.key")
+// const certificate=fs.readFileSync("server.cert")
 
 const accesslogstream=fs.createWriteStream(path.join(__dirname,"access.log"),{flags:"a"})
 const helmet =require("helmet")
@@ -22,7 +27,7 @@ const compression=require("compression")
 const morgan=require("morgan")
 
 const app=express();
-app.use(helmet())
+//app.use(helmet())
 app.use(compression())
 app.use(morgan("combined",{stream:accesslogstream}))
 app.use(cors())
@@ -32,6 +37,11 @@ app.use("/user",userrouter)
 app.use("/purchase",purchaserouter)
 app.use("/premium",premiumrouter)
 app.use("/password",passwordrouter)
+app.use((req,res,next)=>{
+    console.log("urll",req.url)
+    //res.setHeader( 'Content-Security-Policy', "script-src 'self' https://cdnjs.cloudflare.com" )
+    res.sendFile(path.join(__dirname,`${req.url}`))
+})
 
 Expense.belongsTo(User,{constrainsts:true})
 User.hasMany(Expense);
@@ -45,5 +55,9 @@ ForgotPasswordRequests.belongsTo(User)
 User.hasMany(DownloadedFilesUrl)
 DownloadedFilesUrl.belongsTo(User)
 sequelize.sync()
-.then(()=>app.listen(process.env.CONNECTION_PORT ||4000))
+.then(()=>{
+    // https.createServer({key:privateKey,cert:certificate},app)
+    //  .listen(process.env.CONNECTION_PORT ||4000)
+    app.listen(process.env.CONNECTION_PORT ||4000)
+    })
 .catch(err=>console.log(err))
