@@ -68,6 +68,24 @@ exports.deleteexpense=async (req,res,next)=>{
     }
 }
 
+exports.editexpense=async (req,res,next)=>{
+    try{
+    var t=await sequelize.transaction()
+    const {Expense,Description,Category}=req.body
+    const expense= await req.user.getExpenses({where:{id:req.params.expenseid}})
+    const updated=expense[0].update({expense:Expense,description:Description,category:Category},{transaction:t})
+    await req.user.update({totalexpenses:req.user.totalexpenses-expense[0].expense+Number(Expense)},{transaction:t})
+    t.commit()
+    console.log(updated)
+    res.status(200).json(updated)
+}
+catch(err)
+{
+    t.rollback();
+    res.status(400).json(err)
+}
+}
+
 async function uploadtos3(data,filename)
 {
     var response;

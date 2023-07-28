@@ -6,6 +6,7 @@ const expenses=document.getElementsByClassName("list-group")
 const error=document.querySelector(".error")
 const premiumcol=document.getElementById("premiumcol")
 const pagination=document.getElementById("pagination")
+let selected_edit_id=null;
 
 function showleaderboardonscreen(data)
 {
@@ -29,7 +30,7 @@ window.addEventListener("DOMContentLoaded",async ()=>{
     try{
     const token=localStorage.getItem("token")    
     const page=1;
-    const res=await axios.get(`http://43.205.111.226:4000/expense/list?page=${page}&rowsperpage=${localStorage.getItem("rowsperpage")}`,{headers:{"Authorization":token}})
+    const res=await axios.get(`http://43.205.111.226:4000/expenses/get-expenses?page=${page}&rowsperpage=${localStorage.getItem("rowsperpage")}`,{headers:{"Authorization":token}})
 
         if(res.data.ispremiumuser===true)
         {
@@ -92,7 +93,7 @@ async function getexpenses(page)
     try{
         const token=localStorage.getItem("token")
         const rowsperpage=localStorage.getItem("rowsperpage")    
-        const res=await axios.get(`http://43.205.111.226:4000/expense/list?page=${page}&rowsperpage=${rowsperpage}`,{headers:{"Authorization":token}})
+        const res=await axios.get(`http://43.205.111.226:4000/expenses/get-expenses?page=${page}&rowsperpage=${rowsperpage}`,{headers:{"Authorization":token}})
             if(res.data.ispremiumuser===true)
             {
             document.getElementById("premiumcol").innerHTML="<p style='color:blue;'>You are a premium user </p>";
@@ -196,7 +197,7 @@ catch(err){
 document.getElementById("download").onclick=async (e)=>{
 try{
     const token=localStorage.getItem("token")
-    const res=await axios.get("http://43.205.111.226:4000/expense/Download",{headers:{"Authorization":token}})
+    const res=await axios.get("http://43.205.111.226:4000/expenses/download-expense",{headers:{"Authorization":token}})
     console.log(res)
 
     showdownloadedfilesurlonscreen(res.data.result)
@@ -278,12 +279,24 @@ async function onsubmit(e)
         //const user_string=JSON.stringify(user)
         //localStorage.setItem(desc.value,user_string)
         try{
-        const token=localStorage.getItem("token")
-        const res=await axios.post("http://43.205.111.226:4000/expense/add",exp,{headers:{"Authorization":token}})
+            const token=localStorage.getItem("token")
+        if(selected_edit_id)
+        {
+            const res=await axios.put(`http://43.205.111.226:4000/expenses/edit-expense/${selected_edit_id}`,exp,{headers:{"Authorization":token}})
+            document.getElementById(selected_edit_id).childNodes[0]=exp.Expense;
+            document.getElementById(selected_edit_id).childNodes[2]=exp.Description;
+            document.getElementById(selected_edit_id).childNodes[4]=exp.Category;
+
+        }
+        
+        else
+        {
+        const res=await axios.post("http://43.205.111.226:4000/expenses/add-expense",exp,{headers:{"Authorization":token}})
             showexpenseonscreen(res.data)
-            expense.value=""
-            desc.value=""
-            cat.value=""
+        }
+        expense.value=""
+        desc.value=""
+        cat.value=""
         }
         catch(err){
         error.innerHTML=`<h4 style='color:red;'>Error:${err.message}</h4>`
@@ -304,7 +317,7 @@ async function onsubmit(e)
             //localStorage.removeItem(desc);
             const token =localStorage.getItem("token")
             try{
-            const res=await axios.delete(`http://43.205.111.226:4000/expense/delete/${e.target.parentElement.id}`,{headers:{"Authorization":token}})
+            const res=await axios.delete(`http://43.205.111.226:4000/expenses/delete-expense/${e.target.parentElement.id}`,{headers:{"Authorization":token}})
                 expenses[0].removeChild(e.target.parentElement)
                 console.log(res)}
             catch(err){
@@ -312,11 +325,12 @@ async function onsubmit(e)
             setTimeout(()=>error.lastChild.remove(),5000)
             }
         }
-        else if(e.target.value==="Edit")
+        else if (e.target.value==="Edit")
         {   try{
-            const token =localStorage.getItem("token")
-            const res=await axios.delete(`http://43.205.111.226:4000/expense/delete/${e.target.parentElement.id}`,{headers:{"Authorization":token}})
-            expenses[0].removeChild(e.target.parentElement)
+            //const token =localStorage.getItem("token")
+            //const res=await axios.delete(`http://43.205.111.226:4000/expenses/delete-expense${e.target.parentElement.id}`,{headers:{"Authorization":token}})
+            //expenses[0].removeChild(e.target.parentElement)
+            selected_edit_id=e.target.parentElement.id
             let de = e.target.parentElement.childNodes[4].textContent
             desc.value=de
     
@@ -325,6 +339,8 @@ async function onsubmit(e)
     
             let c= e.target.parentElement.childNodes[2].textContent
             cat.value=c;
+            document.getElementById("submit").value="Update";
+            selected_edit_id=e.target.parentElement.id
             }
             catch(err){
             error.innerHTML=`<h4 style='color:red;'>${err.message} </h4>`
