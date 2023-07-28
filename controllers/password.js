@@ -101,7 +101,7 @@ exports.postresetpassword=async(req,res,next)=>{
             }
             await User.update({Password:hash},{where:{id:request[0].userId}})
             await request[0].update({isactive:false})
-            res.status(200).send('<html><title>"Successful"</title><body><h1>Password Reset Successful</h1></body></html>')
+            res.status(200).send('<html><title>"Successful"</title><body><h1 style="color:blue">Password Reset Successful</h1></body></html>')
         })
     }
     else{

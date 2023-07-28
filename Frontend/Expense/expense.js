@@ -34,7 +34,7 @@ window.addEventListener("DOMContentLoaded",async ()=>{
         if(res.data.ispremiumuser===true)
         {
         document.getElementById("premiumcol").innerHTML="<p style='color:blue;'>You are a premium user </p>";
-        document.getElementById("leaderboardcol").innerHTML="<button id='lb-button'> Show Leaderboard</button>"
+        document.getElementById("leaderboardcol").innerHTML="<button id='lb-button'class='btn btn-primary'> Show Leaderboard</button>"
         document.getElementById("downloadedfiles-header").textContent="Downloaded Files Urls"
          res.data.filesurl.forEach(url=>showdownloadedfilesurlonscreen(url))
         }
