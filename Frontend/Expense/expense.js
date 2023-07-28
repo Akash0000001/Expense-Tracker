@@ -283,9 +283,10 @@ async function onsubmit(e)
         if(selected_edit_id)
         {
             const res=await axios.put(`http://43.205.111.226:4000/expenses/edit-expense/${selected_edit_id}`,exp,{headers:{"Authorization":token}})
-            document.getElementById(selected_edit_id).childNodes[0]=exp.Expense;
-            document.getElementById(selected_edit_id).childNodes[2]=exp.Description;
-            document.getElementById(selected_edit_id).childNodes[4]=exp.Category;
+            document.getElementById(selected_edit_id).childNodes[0].textContent=exp.Expense;
+            document.getElementById(selected_edit_id).childNodes[4].textContent=exp.Description;
+            document.getElementById(selected_edit_id).childNodes[2].textContent=exp.Category;
+            document.getElementById("submit").value="Add Expense"
 
         }
         
